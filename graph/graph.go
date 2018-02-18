@@ -1,18 +1,18 @@
 package graph
 
 import (
-	"fmt"
-	"sort"
+	//"sort"
+	//"fmt"
 )
 
 // Ребро
-type Edge [2]int
+type edge [2]int
 
 // Список ребер
-type Edges []Edge
+type Edges []edge
 
 // Получить все вершины
-func (es *Edges) GetVertexes() []int {
+func (es *Edges) getVertexes() []int {
 	var uniqueVertexes = make(map[int]bool)
 	for _, e := range *es {
 		for _, v := range e {
@@ -25,40 +25,58 @@ func (es *Edges) GetVertexes() []int {
 	for k := range uniqueVertexes {
 		vertexes[k] = len(vertexes)
 	}
-	sort.Ints(vertexes)
+	//sort.Ints(vertexes)
 	return vertexes
 }
 
 // Создать матрицу смежности
-func (es *Edges) CreateAdjacencyMatrix(vertexes []int) [][]bool{
+func (es *Edges) createAdjacencyMatrix(vertexes []int) [][]bool{
 	var size = len(vertexes)
 	var am = make([][]bool, size)
 
 	for i := 0; i < size; i++ {
 		for j := 0; j < size; j++ {
 			am[i] = append(am[i], false)
+			//am[i] = append(am[i], false)
 		}
 	}
+	//fmt.Printf("===\n%v\n===", am)
 	for _, v := range *es {
 		am[v[0]][v[1]] = true
-		am[v[1]][v[0]] = true
+		//am[v[1]][v[0]] = true
 	}
-	fmt.Printf("\n\n%v\n\n", am)
 	return am
 }
 
-func Dfs(graph [][]bool, visited []bool, n int, v int, x int, cnt int) int {
+// Рекурсивный поиск всех путей
+func (es *Edges) recursiveDfs(graph [][]bool, path []int, visited []bool, n int, v int, x int, results *[][]int) {
+	path = append(path, v)
 	if v == x {
-		cnt++
-		fmt.Printf("\n%v\n", visited)
-		return cnt
+		result := make([]int, len(path))
+		copy(result, path[:])
+		*results = append(*results, result)
+		return
 	}
 	visited[v] = true
 	for i := 0; i < n; i++ {
 		if graph[v][i] && !visited[i] {
-			cnt = Dfs(graph, visited, n, i, x, cnt)
+			es.recursiveDfs(graph, path, visited, n, i, x, results)
 		}
 	}
 	visited[v] = false
-	return cnt
+	return
+}
+
+// Поиск всех путей в графе вглубь
+func (es *Edges) Dfs(from int, to int) [][]int {
+	vertexes := es.getVertexes()
+	adjacencyMatrix := es.createAdjacencyMatrix(vertexes)
+	matrixLen := len(vertexes)
+
+	visited := make([]bool, matrixLen)
+	results := make([][]int, 0)
+	currentPath := make([]int, 0)
+
+	es.recursiveDfs(adjacencyMatrix, currentPath, visited, matrixLen, from, to, &results)
+	return results
 }
