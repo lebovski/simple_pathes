@@ -1,12 +1,15 @@
 # simple_pathes
 
-simple_pathes is library for get all pathes in graph using DFS.
+simple_pathes is library for get all pathes in graph using DFS
 
 Usage:
+1. set edges
+2. call dfs
 
+Example:
+```
 package main
 
-```
 import (
 	"fmt"
 	"github.com/lebovski/simple_pathes/graph"
