@@ -24,7 +24,7 @@ func makeSquareMatrix(length int) [][]bool {
 	var squareMatrix = make([][]bool, length)
 	for i := 0; i < length; i++ {
 		for j := 0; j < length; j++ {
-			squareMatrix[i] = append(squareMatrix[i], false)
+			squareMatrix[i] = make([]bool, length)
 		}
 	}
 	return squareMatrix
