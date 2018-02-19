@@ -1,5 +1,6 @@
 package graph
 
+// Depth-first search for any values
 func (edges *Edges) Dfs(from interface{}, to interface{}) [][]interface{} {
 	uniqueVertexes := edges.GetUniqueVertexes()
 	intToInterface, interfaceToInt := MakeInterfaceAndIntConverters(uniqueVertexes)

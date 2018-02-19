@@ -8,6 +8,7 @@ type edge [2]interface{}
 
 type Edges []edge
 
+// Get all unique vertexes from edges list
 func (edges *Edges) GetUniqueVertexes() *[]interface{} {
 	var uniqueVertexes = make(map[interface{}]bool)
 	for _, e := range *edges {
@@ -25,6 +26,7 @@ func (edges *Edges) GetUniqueVertexes() *[]interface{} {
 	return &vertexes
 }
 
+// Convert integer path to common (interface) path
 func (edges *Edges) ConvertEdgesToIntEdges(interfaceToInt *map[interface{}]int) *math.IntEdges {
 	intEdges := make(math.IntEdges, 0, len(*edges))
 	for _, v := range *edges {
