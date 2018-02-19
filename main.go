@@ -18,5 +18,5 @@ func main() {
 		{"j", "f"},
 		{"e", "c"},
 	}
-	fmt.Printf("\n%v\n\n", ces.Dfs("a", "f"))
+	fmt.Printf("\n%v\n\n", ces.DFS("a", "f"))
 }
