@@ -1,0 +1,5 @@
+*.coverprofile
+*out
+*png
+id_rsa
+.idea
