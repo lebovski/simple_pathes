@@ -4,12 +4,12 @@ import (
 	"github.com/lebovski/simple_pathes/math"
 )
 
-type edge [2]interface{}
+type Edge [2]interface{}
 
-type Edges []edge
+type Edges []Edge
 
 // Get all unique vertexes from edges list
-func (edges *Edges) GetUniqueVertexes() *[]interface{} {
+func (edges *Edges) GetUniqueVertexes() []interface{} {
 	var uniqueVertexes = make(map[interface{}]bool)
 	for _, e := range *edges {
 		for _, v := range e {
@@ -23,14 +23,22 @@ func (edges *Edges) GetUniqueVertexes() *[]interface{} {
 	for uv := range uniqueVertexes {
 		vertexes = append(vertexes, uv)
 	}
-	return &vertexes
+	return vertexes
 }
 
-// Convert integer path to common (interface) path
-func (edges *Edges) ConvertEdgesToIntEdges(interfaceToInt *map[interface{}]int) *math.IntEdges {
+// Convert integer named edges to int edges
+func (edges *Edges) ConvertEdgesToIntEdges(interfaceToInt map[interface{}]int) math.IntEdges {
 	intEdges := make(math.IntEdges, 0, len(*edges))
-	for _, v := range *edges {
-		intEdges = append(intEdges, [2]int{(*interfaceToInt)[v[0]], (*interfaceToInt)[v[1]]})
+	for _, edge := range *edges {
+		intEdge := edge.ConvertEdgeToIntEdge(interfaceToInt)
+		intEdges = append(intEdges, intEdge)
 	}
-	return &intEdges
+	return intEdges
+}
+
+// Convert integer named edge to int edge
+func (edge *Edge) ConvertEdgeToIntEdge(interfaceToInt map[interface{}]int) math.IntEdge {
+	return math.IntEdge{
+		interfaceToInt[edge[0]], interfaceToInt[edge[1]],
+	}
 }
