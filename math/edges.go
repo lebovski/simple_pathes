@@ -1,10 +1,7 @@
 package math
 
-// Edge of graph
-type IntEdge [2]int
-
 // List of graph edges
-type IntEdges []IntEdge
+type IntEdges [][2]int
 
 // Get count of unique vertexes
 func (edges *IntEdges) getUniqueVertexesCount() int {

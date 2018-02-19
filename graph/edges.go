@@ -4,9 +4,11 @@ import (
 	"github.com/lebovski/simple_pathes/math"
 )
 
-type Edge [2]interface{}
+// Named edge
+type edge [2]interface{}
 
-type Edges []Edge
+// List of named edges
+type Edges []edge
 
 // Get all unique vertexes from edges list
 func (edges *Edges) GetUniqueVertexes() []interface{} {
@@ -37,8 +39,8 @@ func (edges *Edges) ConvertEdgesToIntEdges(interfaceToInt map[interface{}]int) m
 }
 
 // Convert integer named edge to int edge
-func (edge *Edge) ConvertEdgeToIntEdge(interfaceToInt map[interface{}]int) math.IntEdge {
-	return math.IntEdge{
+func (edge *edge) ConvertEdgeToIntEdge(interfaceToInt map[interface{}]int) [2]int {
+	return [2]int{
 		interfaceToInt[edge[0]], interfaceToInt[edge[1]],
 	}
 }
