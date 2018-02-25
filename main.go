@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/lebovski/simple_pathes/graph"
+	"github.com/lebovski/simple_pathes/utils"
 )
 
 func main() {
@@ -19,4 +20,5 @@ func main() {
 		{"e", "c"},
 	}
 	fmt.Printf("\n%v\n\n", ces.DFS("a", "f"))
+	utils.GetConfig()
 }

@@ -1,0 +1,56 @@
+states:
+  - INITIAL:
+    - action: Header
+      result: AWAIT
+    - action: Chunk
+      result: BROKEN
+    - action: Identifier
+      result: BROKEN
+    - action: ClientMetadata
+      result: BROKEN
+    - action: EOF
+      result: BROKEN
+  - AWAIT:
+    - action: Header
+      result: BROKEN
+    - action: Chunk
+      result: AWAIT
+    - action: Identifier
+      result: AWAIT_HAS_ID
+    - action: ClientMetadata
+      result: AWAIT_HAS_META
+    - action: EOF
+      result: BROKEN
+  - AWAIT_HAS_ID:
+    - action: Header
+      result: BROKEN
+    - action: Chunk
+      result: AWAIT_HAS_ID
+    - action: Identifier
+      result: BROKEN
+    - action: ClientMetadata
+      result: AWAIT_HAS_ID_AND_META
+    - action: EOF
+      result: FINISHED
+  - AWAIT_HAS_META:
+    - action: Header
+      result: BROKEN
+    - action: Chunk
+      result: AWAIT_HAS_META
+    - action: Identifier
+      result: AWAIT_HAS_ID_AND_META
+    - action: ClientMetadata
+      result: BROKEN
+    - action: EOF
+      result: BROKEN
+  - AWAIT_HAS_ID_AND_META:
+    - action: Header
+      result: BROKEN
+    - action: Chunk
+      result: AWAIT_HAS_ID_AND_META
+    - action: Identifier
+      result: BROKEN
+    - action: ClientMetadata
+      result: BROKEN
+    - action: EOF
+      result: FINISHED
