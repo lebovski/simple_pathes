@@ -27,14 +27,20 @@ func main() {
 	}
 
 	edges := utils.GetEdges("./utils/example.yml")
-	brokenRes := edges.DFS("INITIAL", "BROKEN")
+	brokenRes := edges.DFS(
+		utils.Vertex{"INITIAL", "state", false, 0},
+		utils.Vertex{"BROKEN", "state", false, 0},
+	)
 	fmt.Printf("\n\nBroken count: %v", len(brokenRes))
 	fmt.Printf("\n%v", "====== Paths:")
 	for _, v := range brokenRes {
 		fmt.Printf("\n%v", v)
 	}
 
-	finishedRes := edges.DFS("INITIAL", "FINISHED")
+	finishedRes := edges.DFS(
+		utils.Vertex{"INITIAL", "state", false, 0},
+		utils.Vertex{"FINISHED", "state", false, 0},
+	)
 	fmt.Printf("\n\nFinished count: %v", len(finishedRes))
 	fmt.Printf("\n%v", "====== Paths:")
 	for _, v := range finishedRes {
@@ -43,6 +49,18 @@ func main() {
 		//		fmt.Printf("\n%v", vv)
 		//	}
 		//}
-		fmt.Printf("\n%v", v)
+		res := make([]string, 0, len(v))
+		for _, ver := range v {
+			vv := ver.(utils.Vertex)
+			if vv.Loop {
+				res = append(res, "Chunk")
+				continue
+			}
+			if vv.Type == "action" {
+				res = append(res, vv.Name)
+				continue
+			}
+		}
+		fmt.Printf("\n%v", res)
 	}
 }

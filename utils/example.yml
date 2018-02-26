@@ -20,7 +20,7 @@ states:
     - action: ClientMetadata
       result: AWAIT_HAS_META
     - action: EOF
-      result: BROKEN
+      result: FINISHED
   - AWAIT_HAS_ID:
     - action: Header
       result: BROKEN
