@@ -33,9 +33,7 @@ func main() {
 	)
 	fmt.Printf("\n\nBroken count: %v", len(brokenRes))
 	fmt.Printf("\n%v", "====== Paths:")
-	for _, v := range brokenRes {
-		fmt.Printf("\n%v", v)
-	}
+	getPaths(brokenRes)
 
 	finishedRes := edges.DFS(
 		utils.Vertex{"INITIAL", "state", false, 0},
@@ -43,12 +41,11 @@ func main() {
 	)
 	fmt.Printf("\n\nFinished count: %v", len(finishedRes))
 	fmt.Printf("\n%v", "====== Paths:")
+	getPaths(finishedRes)
+}
+
+func getPaths(finishedRes [][]interface{}) {
 	for _, v := range finishedRes {
-		//for _, vv := range v {
-		//	if reflect.TypeOf(vv) != reflect.TypeOf("") {
-		//		fmt.Printf("\n%v", vv)
-		//	}
-		//}
 		res := make([]string, 0, len(v))
 		for _, ver := range v {
 			vv := ver.(utils.Vertex)
