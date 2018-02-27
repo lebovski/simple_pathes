@@ -40,7 +40,7 @@ func GetEdges(ymlPath string, loopCount int) graph.Edges {
 		}
 	}
 
-	appendCicledEdges(loopElements, &edges, loopCount)
+	appendCycledEdges(loopElements, &edges, loopCount)
 
 	return edges
 }
@@ -76,7 +76,7 @@ func unmarshalYaml(ymlPath string) States {
 	return states
 }
 
-func appendCicledEdges(loopVertexes map[string]bool, edges *graph.Edges, loopCount int) {
+func appendCycledEdges(loopVertexes map[string]bool, edges *graph.Edges, loopCount int) {
 	for vertexName := range loopVertexes {
 		vertex := Vertex{Name: vertexName, Type: "state", Loop: true, LoopCount: 0, Index: 0}
 		inEdges := getInEdges(*edges, vertex)
