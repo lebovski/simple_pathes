@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/lebovski/simple_pathes/graph"
 	"github.com/lebovski/simple_pathes/utils"
-	//"reflect"
 )
 
 func main() {
@@ -28,24 +28,31 @@ func main() {
 
 	edges := utils.GetEdges("./utils/example.yml", 0)
 	brokenRes := edges.DFS(
-		utils.Vertex{"INITIAL", "state", false, 0, 0},
-		utils.Vertex{"BROKEN", "state", false, 0, 0},
+		utils.Vertex{Name: "INITIAL", Type: "state", Loop: false, LoopCount: 0, Index: 0},
+		utils.Vertex{Name: "BROKEN", Type: "state", Loop: false, LoopCount: 0, Index: 0},
 	)
 	fmt.Printf("\n\nBroken count: %v", len(brokenRes))
 	fmt.Printf("\n%v", "====== Paths:")
-	getPaths(brokenRes)
+	iniToBroPaths := getPaths(brokenRes)
+	for _, v := range iniToBroPaths {
+		fmt.Printf("\n%v", v)
+	}
 
 	finishedRes := edges.DFS(
-		utils.Vertex{"INITIAL", "state", false, 0, 0},
-		utils.Vertex{"FINISHED", "state", false, 0, 0},
+		utils.Vertex{Name: "INITIAL", Type: "state", Loop: false, LoopCount: 0, Index: 0},
+		utils.Vertex{Name: "FINISHED", Type: "state", Loop: false, LoopCount: 0, Index: 0},
 	)
 
 	fmt.Printf("\n\nFinished count: %v", len(finishedRes))
 	fmt.Printf("\n%v", "====== Paths:")
-	getPaths(finishedRes)
+	iniToFinPaths := getPaths(finishedRes)
+	for _, v := range iniToFinPaths {
+		fmt.Printf("\n%v", v)
+	}
 }
 
-func getPaths(finishedRes [][]interface{}) {
+func getPaths(finishedRes [][]interface{}) [][]string {
+	results := make([][]string, 0, len(finishedRes))
 	for _, v := range finishedRes {
 		res := make([]string, 0, len(v))
 		for _, ver := range v {
@@ -61,6 +68,7 @@ func getPaths(finishedRes [][]interface{}) {
 				continue
 			}
 		}
-		fmt.Printf("\n%v", res)
+		results = append(results, res)
 	}
+	return results
 }
