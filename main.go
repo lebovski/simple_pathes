@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// CREATE SIMPLE GRAPH AND GET PATHS
 	var simpleEdges = graph.Edges{
 		{"a", "b"},
 		{"b", "f"},
@@ -25,50 +26,34 @@ func main() {
 	for _, v := range simpleEdgesRes {
 		fmt.Printf("\n%v", v)
 	}
+	fmt.Printf("\n%v\n", "======")
 
-	edges := utils.GetEdges("./utils/example.yml", 0)
+	// CREATE GRAPH FROM YAML AND GET PATHS
+	states := utils.GetStatesFromYaml("./example.yml")
+
+	fmt.Println("\nGet actions from INITIAL to BROKEN")
+	edges := graph.MakeEdges(states, 0)
 	brokenRes := edges.DFS(
-		utils.Vertex{Name: "INITIAL", Type: "state", Loop: false, LoopCount: 0, Index: 0},
-		utils.Vertex{Name: "BROKEN", Type: "state", Loop: false, LoopCount: 0, Index: 0},
+		graph.Vertex{Name: "INITIAL", Type: "state", Loop: false, LoopCount: 0, Index: 0},
+		graph.Vertex{Name: "BROKEN", Type: "state", Loop: false, LoopCount: 0, Index: 0},
 	)
-	fmt.Printf("\n\nBroken count: %v", len(brokenRes))
-	fmt.Printf("\n%v", "====== Paths:")
-	iniToBroPaths := getPaths(brokenRes)
+	fmt.Printf("Broken count: %v\n%v", len(brokenRes), "====== Paths:")
+	iniToBroPaths := graph.GetPathsOfNames(brokenRes)
 	for _, v := range iniToBroPaths {
 		fmt.Printf("\n%v", v)
 	}
+	fmt.Printf("\n%v\n", "======")
 
+	fmt.Println("\nGet actions from INITIAL to FINISHED")
 	finishedRes := edges.DFS(
-		utils.Vertex{Name: "INITIAL", Type: "state", Loop: false, LoopCount: 0, Index: 0},
-		utils.Vertex{Name: "FINISHED", Type: "state", Loop: false, LoopCount: 0, Index: 0},
+		graph.Vertex{Name: "INITIAL", Type: "state", Loop: false, LoopCount: 0, Index: 0},
+		graph.Vertex{Name: "FINISHED", Type: "state", Loop: false, LoopCount: 0, Index: 0},
 	)
 
-	fmt.Printf("\n\nFinished count: %v", len(finishedRes))
-	fmt.Printf("\n%v", "====== Paths:")
-	iniToFinPaths := getPaths(finishedRes)
+	fmt.Printf("Finished count: %v\n%v", len(finishedRes), "====== Paths:")
+	iniToFinPaths := graph.GetPathsOfNames(finishedRes)
 	for _, v := range iniToFinPaths {
 		fmt.Printf("\n%v", v)
 	}
-}
-
-func getPaths(finishedRes [][]interface{}) [][]string {
-	results := make([][]string, 0, len(finishedRes))
-	for _, v := range finishedRes {
-		res := make([]string, 0, len(v))
-		for _, ver := range v {
-			vv := ver.(utils.Vertex)
-			if vv.Loop && vv.Type == "state" {
-				for ii := 0; ii <= vv.LoopCount; ii++ {
-					res = append(res, "Chunk")
-					continue
-				}
-			}
-			if vv.Type == "action" {
-				res = append(res, vv.Name)
-				continue
-			}
-		}
-		results = append(results, res)
-	}
-	return results
+	fmt.Printf("\n%v\n", "======")
 }
