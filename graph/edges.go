@@ -5,10 +5,10 @@ import (
 )
 
 // Named edge
-type edge [2]interface{}
+type Edge [2]interface{}
 
 // List of named edges
-type Edges []edge
+type Edges []Edge
 
 // Get all unique vertexes from edges list
 func (edges *Edges) GetUniqueVertexes() []interface{} {
@@ -39,7 +39,7 @@ func (edges *Edges) ConvertEdgesToIntEdges(interfaceToInt map[interface{}]int) m
 }
 
 // Convert integer named edge to int edge
-func (edge *edge) ConvertEdgeToIntEdge(interfaceToInt map[interface{}]int) [2]int {
+func (edge *Edge) ConvertEdgeToIntEdge(interfaceToInt map[interface{}]int) [2]int {
 	return [2]int{
 		interfaceToInt[edge[0]], interfaceToInt[edge[1]],
 	}
