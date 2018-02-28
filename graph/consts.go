@@ -1,7 +1,8 @@
 package graph
 
 const (
-	MainSection      = "states"
-	ActionVertexType = "action"
-	StateVertexType  = "state"
+	mainSection      = "states"
+	actionVertexType = "action"
+	stateVertexType  = "state"
+	resultOfAction   = "result"
 )

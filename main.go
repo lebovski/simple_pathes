@@ -22,7 +22,8 @@ func main() {
 		{"e", "c"},
 	}
 	simpleEdgesRes := simpleEdges.DFS("a", "f")
-	fmt.Printf("\n%v", "====== Simple paths")
+	fmt.Println("\nGet vertexes from a to f")
+	fmt.Printf("%v", "====== Simple paths")
 	for _, v := range simpleEdgesRes {
 		fmt.Printf("\n%v", v)
 	}
@@ -38,7 +39,7 @@ func main() {
 		graph.Vertex{Name: "BROKEN", Type: "state", Loop: false, LoopCount: 0, Index: 0},
 	)
 	fmt.Printf("Broken count: %v\n%v", len(brokenRes), "====== Paths:")
-	iniToBroPaths := graph.GetPathsOfNames(brokenRes)
+	iniToBroPaths := graph.GetPathsOfNames(brokenRes, "Chunk")
 	for _, v := range iniToBroPaths {
 		fmt.Printf("\n%v", v)
 	}
@@ -51,7 +52,7 @@ func main() {
 	)
 
 	fmt.Printf("Finished count: %v\n%v", len(finishedRes), "====== Paths:")
-	iniToFinPaths := graph.GetPathsOfNames(finishedRes)
+	iniToFinPaths := graph.GetPathsOfNames(finishedRes, "Chunk")
 	for _, v := range iniToFinPaths {
 		fmt.Printf("\n%v", v)
 	}

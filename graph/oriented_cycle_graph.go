@@ -19,18 +19,18 @@ func MakeEdges(states States, loopCount int) Edges {
 	var edges Edges
 	// Map of loop vertexes
 	loopVertexes := getLoopVertexes(states)
-	for stateIndex, v := range states[MainSection] {
+	for stateIndex, v := range states[mainSection] {
 		for state, actions := range v {
 			for _, action := range actions {
-				var st0, st1, act Vertex
+				var beforeState, resultState, currentAction Vertex
 
-				act = Vertex{Name: action[ActionVertexType], Type: ActionVertexType, Loop: false, LoopCount: 0, Index: stateIndex}
-				st0 = Vertex{Name: state, Type: StateVertexType, Loop: loopVertexes[state], LoopCount: 0, Index: 0}
-				st1 = Vertex{Name: action["result"], Type: StateVertexType, Loop: loopVertexes[action["result"]], LoopCount: 0, Index: 0}
+				currentAction = Vertex{Name: action[actionVertexType], Type: actionVertexType, Loop: false, LoopCount: 0, Index: stateIndex}
+				beforeState = Vertex{Name: state, Type: stateVertexType, Loop: loopVertexes[state], LoopCount: 0, Index: 0}
+				resultState = Vertex{Name: action[resultOfAction], Type: stateVertexType, Loop: loopVertexes[action[resultOfAction]], LoopCount: 0, Index: 0}
 
-				if state != action["result"] {
-					edges = append(edges, Edge{st0, act})
-					edges = append(edges, Edge{act, st1})
+				if state != action[resultOfAction] {
+					edges = append(edges, Edge{beforeState, currentAction})
+					edges = append(edges, Edge{currentAction, resultState})
 				}
 			}
 		}
@@ -41,19 +41,19 @@ func MakeEdges(states States, loopCount int) Edges {
 }
 
 // Get list of actions lists something like: [[do_something_1, do_something_2, ...], [...] ...]
-func GetPathsOfNames(paths [][]interface{}) [][]string {
+func GetPathsOfNames(paths [][]interface{}, actionOnLoop string) [][]string {
 	results := make([][]string, 0, len(paths))
 	for _, path := range paths {
 		res := make([]string, 0, len(path))
 		for _, ver := range path {
 			vv := ver.(Vertex)
-			if vv.Loop && vv.Type == StateVertexType {
+			if vv.Loop && vv.Type == stateVertexType {
 				for ii := 0; ii <= vv.LoopCount; ii++ {
-					res = append(res, "Chunk")
+					res = append(res, actionOnLoop)
 					continue
 				}
 			}
-			if vv.Type == ActionVertexType {
+			if vv.Type == actionVertexType {
 				res = append(res, vv.Name)
 				continue
 			}
@@ -66,10 +66,10 @@ func GetPathsOfNames(paths [][]interface{}) [][]string {
 // Get vertexes with loops from states
 func getLoopVertexes(states States) map[string]bool {
 	result := make(map[string]bool)
-	for _, v := range states[MainSection] {
+	for _, v := range states[mainSection] {
 		for state, actions := range v {
 			for _, action := range actions {
-				if state == action["result"] {
+				if state == action[resultOfAction] {
 					result[state] = true
 				}
 			}
@@ -81,7 +81,7 @@ func getLoopVertexes(states States) map[string]bool {
 // Append cycles to list of edges
 func appendCycledEdges(loopVertexes map[string]bool, edges *Edges, loopCount int) {
 	for vertexName := range loopVertexes {
-		vertex := Vertex{Name: vertexName, Type: StateVertexType, Loop: true, LoopCount: 0, Index: 0}
+		vertex := Vertex{Name: vertexName, Type: stateVertexType, Loop: true, LoopCount: 0, Index: 0}
 		inEdges := getInEdges(*edges, vertex)
 		outEdges := getOutEdges(*edges, vertex)
 
@@ -93,7 +93,7 @@ func appendCycledEdges(loopVertexes map[string]bool, edges *Edges, loopCount int
 						*edges = append(*edges, Edge{in[0], out[1]})
 					} else {
 						// Create new virtual vertex for extend cycles
-						newVertex := Vertex{Name: vertexName, Type: StateVertexType, Loop: true, LoopCount: count, Index: 0}
+						newVertex := Vertex{Name: vertexName, Type: stateVertexType, Loop: true, LoopCount: count, Index: 0}
 						*edges = append(*edges, Edge{in[0], newVertex})
 						*edges = append(*edges, Edge{newVertex, out[1]})
 					}
