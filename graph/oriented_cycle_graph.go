@@ -14,6 +14,11 @@ type Vertex struct {
 	Index     int
 }
 
+type loopVertex struct {
+	actions []string
+	isLoop  bool
+}
+
 // Get edges from states and use loop on elements with loops
 func MakeEdges(states States, loopCount int) Edges {
 	var edges Edges
@@ -25,8 +30,14 @@ func MakeEdges(states States, loopCount int) Edges {
 				var beforeState, resultState, currentAction Vertex
 
 				currentAction = Vertex{Name: action[actionVertexType], Type: actionVertexType, Loop: false, LoopCount: 0, Index: stateIndex}
-				beforeState = Vertex{Name: state, Type: stateVertexType, Loop: loopVertexes[state], LoopCount: 0, Index: 0}
-				resultState = Vertex{Name: action[resultOfAction], Type: stateVertexType, Loop: loopVertexes[action[resultOfAction]], LoopCount: 0, Index: 0}
+				beforeState = Vertex{Name: state, Type: stateVertexType, Loop: loopVertexes[state].isLoop, LoopCount: 0, Index: 0}
+				var rrr bool
+				if loopVertexes[action[resultOfAction]] == nil {
+					rrr = false
+				} else {
+					rrr = loopVertexes[action[resultOfAction]].isLoop
+				}
+				resultState = Vertex{Name: action[resultOfAction], Type: stateVertexType, Loop: rrr, LoopCount: 0, Index: 0}
 
 				if state != action[resultOfAction] {
 					edges = append(edges, Edge{beforeState, currentAction})
@@ -64,22 +75,28 @@ func GetPathsOfNames(paths [][]interface{}, actionOnLoop string) [][]string {
 }
 
 // Get vertexes with loops from states
-func getLoopVertexes(states States) map[string]bool {
-	result := make(map[string]bool)
+func getLoopVertexes(states States) map[string]*loopVertex {
+	result := make(map[string]*loopVertex)
 	for _, v := range states[mainSection] {
 		for state, actions := range v {
+			act := make([]string, 0)
+			vv := &loopVertex{}
+			vv.isLoop = false
 			for _, action := range actions {
 				if state == action[resultOfAction] {
-					result[state] = true
+					act = append(act, action[actionVertexType])
+					vv.isLoop = true
 				}
 			}
+			vv.actions = act
+			result[state] = vv
 		}
 	}
 	return result
 }
 
 // Append cycles to list of edges
-func appendCycledEdges(loopVertexes map[string]bool, edges *Edges, loopCount int) {
+func appendCycledEdges(loopVertexes map[string]*loopVertex, edges *Edges, loopCount int) {
 	for vertexName := range loopVertexes {
 		vertex := Vertex{Name: vertexName, Type: stateVertexType, Loop: true, LoopCount: 0, Index: 0}
 		inEdges := getInEdges(*edges, vertex)
@@ -92,10 +109,12 @@ func appendCycledEdges(loopVertexes map[string]bool, edges *Edges, loopCount int
 						// If we have Edges [a-b, b-c] then we create edge [a-c] i.e. without cycle
 						*edges = append(*edges, Edge{in[0], out[1]})
 					} else {
-						// Create new virtual vertex for extend cycles
-						newVertex := Vertex{Name: vertexName, Type: stateVertexType, Loop: true, LoopCount: count, Index: 0}
-						*edges = append(*edges, Edge{in[0], newVertex})
-						*edges = append(*edges, Edge{newVertex, out[1]})
+						for _, a := range loopVertexes[vertexName].actions {
+							// Create new virtual vertex for extend cycles
+							newVertex := Vertex{Name: a, Type: actionVertexType, Loop: true, LoopCount: count, Index: 0}
+							*edges = append(*edges, Edge{in[0], newVertex})
+							*edges = append(*edges, Edge{newVertex, out[1]})
+						}
 					}
 				}
 			}
