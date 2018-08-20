@@ -31,13 +31,13 @@ func MakeEdges(states States, loopCount int) Edges {
 
 				currentAction = Vertex{Name: action[actionVertexType], Type: actionVertexType, Loop: false, LoopCount: 0, Index: stateIndex}
 				beforeState = Vertex{Name: state, Type: stateVertexType, Loop: loopVertexes[state].isLoop, LoopCount: 0, Index: 0}
-				var rrr bool
+				var isLoop bool
 				if loopVertexes[action[resultOfAction]] == nil {
-					rrr = false
+					isLoop = false
 				} else {
-					rrr = loopVertexes[action[resultOfAction]].isLoop
+					isLoop = loopVertexes[action[resultOfAction]].isLoop
 				}
-				resultState = Vertex{Name: action[resultOfAction], Type: stateVertexType, Loop: rrr, LoopCount: 0, Index: 0}
+				resultState = Vertex{Name: action[resultOfAction], Type: stateVertexType, Loop: isLoop, LoopCount: 0, Index: 0}
 
 				if state != action[resultOfAction] {
 					edges = append(edges, Edge{beforeState, currentAction})
