@@ -41,24 +41,30 @@ func MakeEdges(states States, loopCount int) Edges {
 }
 
 // Get list of actions lists something like: [[do_something_1, do_something_2, ...], [...] ...]
-func GetPathsOfNames(paths [][]interface{}, actionOnLoop string) [][]string {
+func GetPathsOfNames(paths [][]interface{}, actionOnLoop []string) [][]string {
 	results := make([][]string, 0, len(paths))
 	for _, path := range paths {
-		res := make([]string, 0, len(path))
-		for _, ver := range path {
-			vv := ver.(Vertex)
-			if vv.Loop && vv.Type == stateVertexType {
-				for ii := 0; ii <= vv.LoopCount; ii++ {
-					res = append(res, actionOnLoop)
+		actionsList := []string{"", }
+		if hasPathLoops(path) {
+			actionsList = actionOnLoop
+		}
+		for _, a := range actionsList {
+			res := make([]string, 0, len(path))
+			for _, ver := range path {
+				vv := ver.(Vertex)
+				if vv.Loop && vv.Type == stateVertexType {
+					for ii := 0; ii <= vv.LoopCount; ii++ {
+						res = append(res, a)
+						continue
+					}
+				}
+				if vv.Type == actionVertexType {
+					res = append(res, vv.Name)
 					continue
 				}
 			}
-			if vv.Type == actionVertexType {
-				res = append(res, vv.Name)
-				continue
-			}
+			results = append(results, res)
 		}
-		results = append(results, res)
 	}
 	return results
 }
@@ -123,4 +129,14 @@ func getOutEdges(edges Edges, vertex Vertex) []Edge {
 		}
 	}
 	return res
+}
+
+func hasPathLoops(path []interface{}) bool {
+	for _, ver := range path {
+		vv := ver.(Vertex)
+		if vv.Loop && vv.Type == stateVertexType {
+			return true
+		}
+	}
+	return false
 }
